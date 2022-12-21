@@ -1,0 +1,28 @@
+get inputs
+{
+    digits [10], n, output [11]
+    enter number of digits = n
+    enter digits in digits array
+    enter intiger digit = number
+}
+making output array
+{
+    for (i = 0  ;i < n ;i++)
+        output [i] = digits [i]
+    output[n] = number
+}
+sorting numbers (with bubble sort)
+{
+    for (i = 0 ; i < n + 1; i++)
+    {
+        for (j = 0; j < n; j++)
+        {
+            if (output[j + 1] > output[j])
+            {
+                swap output[j + 1] and output[j]
+            }
+        }
+    }   
+}
+print output array
+end
