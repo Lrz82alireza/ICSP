@@ -68,7 +68,6 @@ int main()
     do
     {
         input = get_input();
-        printf("%d\n", state);
     } while (command(input, head, &state) != 2);
 
     free_link(head);
@@ -474,7 +473,6 @@ void free_word(char **input, int counter)
         free(input[i]);
     }
     free(input);
-    printf("**\n"); /////////////////////////////
 }
 
 // free accounts
