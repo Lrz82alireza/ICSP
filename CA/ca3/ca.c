@@ -56,8 +56,6 @@ int like(account *head, int state, char *name, char *post_id);
 int main()
 {
     account *head = (account *)malloc(sizeof(account));
-    head->username = "NULL";
-    head->password = "NULL";
     head->next = NULL;
     head->post = NULL;
     head->like = NULL;
@@ -71,7 +69,6 @@ int main()
     } while (command(input, head, &state) != 2);
 
     free_link(head);
-    free(input);
 }
 
 // get string with unknown length
@@ -106,6 +103,7 @@ int command(char *input, account *head, int *state)
     if (*input == 0)
     {
         // user just pressed enter
+        free(input);
         return 1;
     }
 
@@ -124,6 +122,7 @@ int command(char *input, account *head, int *state)
             {
                 printf("\033[0;31mInvalid command\n\033[0;37mYou can use command \"help\" to see all the commands\n\n");
                 free_word(word, counter);
+                free(input);
                 return 1;
             }
             else if (input[i] == ' ' && i != 0)
@@ -133,6 +132,7 @@ int command(char *input, account *head, int *state)
                 {
                     printf("\033[0;31mInvalid command\033[0;37m(you used '  ')\n\033[0;37mYou can use command \"help\" to see all the commands\n\n");
                     free_word(word, counter);
+                    free(input);
                     return 1;
                 }
                 // resize word
@@ -175,6 +175,7 @@ int command(char *input, account *head, int *state)
         {
             printf("\033[0;31mInvalid command\033[0;37m(too many ' ')\n\033[0;37mYou can use command \"help\" to see all the commands\n\n");
             free_word(word, counter);
+            free(input);
             return 1;
         }
     }
@@ -204,17 +205,22 @@ int command(char *input, account *head, int *state)
         {
             // user didnt enter password
             printf("\nHellooo! your account need a password too.\n(Just use 123 \2 i will delete everything anyway after u close this program)\n\n");
+            free_word(word, counter);
             return 1;
         }
         else if (temp == 0)
         {
             // account didnt generated
             printf("\n\033[0;31mSorry! This username has been sold.\033[0;37m\n\n");
+            free_word(word, counter);
             return 1;
         }
         printf("------------------------------\n");
         printf("\033[0;32mAccount generated successfully\033[0;37m\n");
         printf("------------------------------\n\n");
+        free(word[0]); // free unusable command part
+        free(word); // free main address
+
         return 0;
 
         break;
@@ -225,16 +231,19 @@ int command(char *input, account *head, int *state)
             printf("----------------------------------\n");
             printf("\033[0;33musername or password isn't correct\033[0;37m\n");
             printf("----------------------------------\n\n");
+            free_word(word, counter);
             return 1;
         }
         else if (temp == 2)
         {
             printf("\nDidn't you miss something?? OH YEAH \"\033[0;31m\x1B[1mPASSWORD\x1B[0m\033[0;37m\"\n\n");
+            free_word(word, counter);
             return 1;
         }
         printf("------------------------\n");
         printf("\033[0;32mYou are in now!!\033[0;36m Enjoy:)\033[0;37m\n");
         printf("------------------------\n\n");
+        free_word(word, counter);
         return 0;
 
         break;
@@ -243,11 +252,14 @@ int command(char *input, account *head, int *state)
         if (temp == 0)
         {
             printf("\nYou really think i will let You do that??\n\033[0;31mGo and be a nice \x1B[1mBoy!\x1B[0m \033[0;32mthen \033[0;37m");
+            free_word(word, counter);
             return 1;
         }
         printf("--------------\n");
         printf("\033[0;32mNew post added\033[0;37m\n");
         printf("--------------\n");
+        free(word[0]); // free unusable command part
+        free(word); // free main address
         return 0;
         break;
     case 4:
@@ -257,26 +269,32 @@ int command(char *input, account *head, int *state)
             printf("\n----------\n");
             printf("\033[0;32mPost Liked\033[0;37m\n");
             printf("----------\n\n");
+            free_word(word, counter);
             return 0;
             break;
         case 1:
             printf("\nPost_id is incorrect\n\n");
+            free_word(word, counter);
             return 1;
             break;
         case 2:
             printf("\nYou missed Post_id!!\n\n");
+            free_word(word, counter);
             return 1;
             break;
         case 3:
             printf("\nNo post found.\n\n");
+            free_word(word, counter);
             return 1;
             break;
         case 4:
             printf("\nYou Liked that post before.\n\n");
+            free_word(word, counter);
             return 1;
             break;
         case 5:
             printf("\nNo user found.\n\n");
+            free_word(word, counter);
             return 1;
             break;
         }
@@ -286,6 +304,7 @@ int command(char *input, account *head, int *state)
         printf("-----------------------------------\n");
         printf("\033[0;33mLogout? \033[0;37mOK shut the door behind you\n");
         printf("-----------------------------------\n");
+        free_word(word, counter);
         return 0;
         break;
     case 6:
@@ -293,46 +312,59 @@ int command(char *input, account *head, int *state)
         {
         case 3:
             printf("\nYou dont have any post. Make one then come back to me!\n\n");
+            free_word(word, counter);
             return 1;
             break;
         case 2:
             printf("\nCan I read your mind?? \033[0;31m\x1B[1mNO\x1B[0m!!\033[0;37m you have to tell me which post you want to delete.\n\n");
+            free_word(word, counter);
             return 1;
             break;
         case 1:
             printf("\nYou dont have a post with that id\n\n");
+            free_word(word, counter);
             return 1;
             break;
         }
         printf("--------------------------\n");
         printf("\033[0;32mPost deleted succesfully!!\033[0;37m\n");
         printf("--------------------------\n");
+        free_word(word, counter);
         return 0;
         break;
     case 7:
         info(head, *state);
+        free_word(word, counter);
+        return 0;
         break;
     case 8:
         switch (Fprint_user(head, *state, word[1]))
         {
         case 0:
+            free_word(word, counter);
             return 0;
             break;
         case 1:
             printf("\nCouldnt find user.\n\n");
+            free_word(word, counter);
             return 1;
             break;
         case 2:
             printf("\nFind who?? Adolf Hitler?\n\n");
+            free_word(word, counter);
+            return 1;
             break;
         }
         break;
     case 9:
         help(*state);
+        free_word(word, counter);
+        return 0;
         break;
     case 10:
         // exit
         printf("\033[0;36mYou really wana leave me?\n\033[0;35mOK I will delete everything you just did HAH HAH HAH\n");
+        free_word(word, counter);
         return 2;
         break;
     }
@@ -343,24 +375,20 @@ int convert(char *word, int counter, int state)
 {
     if (strcmp(word, "help") == 0 && counter == 0)
     {
-        free(word);
         return 9;
     }
     else if (strcmp(word, "leave") == 0 && counter == 0)
     {
-        free(word);
         return 10;
     }
     else if (state == false)
     {
         if (strcmp(word, "signup") == 0 && counter == 2)
         {
-            free(word);
             return 1;
         }
         else if (strcmp(word, "login") == 0 && counter == 2)
         {
-            free(word);
             return 2;
         }
     }
@@ -368,37 +396,30 @@ int convert(char *word, int counter, int state)
     {
         if (strcmp(word, "post") == 0 && counter == 1)
         {
-            free(word);
             return 3;
         }
         else if (strcmp(word, "like") == 0 && counter == 2)
         {
-            free(word);
             return 4;
         }
         else if (strcmp(word, "logout") == 0 && counter == 0)
         {
-            free(word);
             return 5;
         }
         else if (strcmp(word, "delete") == 0 && counter == 1)
         {
-            free(word);
             return 6;
         }
         else if (strcmp(word, "info") == 0 && counter == 0)
         {
-            free(word);
             return 7;
         }
         else if (strcmp(word, "find_user") == 0 && counter == 1)
         {
-            free(word);
             return 8;
         }
     }
 
-    free(word);
     return 0;
 }
 
@@ -434,6 +455,7 @@ int signup(account *head, char **word)
     cur->post->next = NULL;
     cur->post->post_ID = 0;
     cur->like->next = NULL;
+    cur->like->post = NULL; ////////////////
 
     cur->username = word[1];
     cur->password = word[2];
@@ -515,7 +537,7 @@ void free_link(account *head)
             cur = NULL;
         }
     }
-
+    head->next = NULL;
     free(head);
 }
 
@@ -585,6 +607,8 @@ int post(account *input, char *word, int state)
         head->next = NULL;
         head->post_ID = 0;
     }*/
+
+
     Post *cur = head->next;
     Post *before = head;
 
